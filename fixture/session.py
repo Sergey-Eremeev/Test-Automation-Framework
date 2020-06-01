@@ -7,35 +7,35 @@ class SessionObject:
         self.app = app
 
     def login(self, username, password):
-        with allure.step('login'):
+        with allure.step(f'login: {username}'):
             wd = self.app.wd
             self.app.open_home_page()
             wd.find_element_by_name("user").clear()
-            wd.find_element_by_name("user").send_keys("%s" % username)
+            wd.find_element_by_name("user").send_keys(f'{username}')
             wd.find_element_by_name("pass").click()
             wd.find_element_by_name("pass").clear()
-            wd.find_element_by_name("pass").send_keys("%s" % password)
+            wd.find_element_by_name("pass").send_keys(f'{password}')
             wd.find_element_by_css_selector('input[type="submit"]').click()
 
     def logout(self):
         with allure.step('logout'):
             wd = self.app.wd
-            wd.find_element_by_link_text("Logout").click()
+            wd.find_element_by_link_text('Logout').click()
 
     def is_logged_in(self):
         with allure.step('is logged in'):
             wd = self.app.wd
-            return len(wd.find_elements_by_link_text("Logout")) > 0
+            return len(wd.find_elements_by_link_text('Logout')) > 0
 
     def is_logged_in_as(self, username):
-        with allure.step('is logged in as'):
+        with allure.step(f'is logged in as: {username}'):
             wd = self.app.wd
             return self.get_logged_user() == username
 
     def get_logged_user(self):
         with allure.step('get logged user'):
             wd = self.app.wd
-            return wd.find_element_by_xpath("//div/div[1]/form/b").text[1:-1]
+            return wd.find_element_by_xpath('//div/div[1]/form/b').text[1:-1]
 
     def ensure_logout(self):
         with allure.step('ensure logout'):
@@ -44,7 +44,7 @@ class SessionObject:
                 self.logout()
 
     def ensure_login(self, username, password):
-        with allure.step('ensure login'):
+        with allure.step(f'ensure login: {username}'):
             wd = self.app.wd
             if self.is_logged_in():
                 if self.is_logged_in_as(username):

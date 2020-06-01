@@ -8,7 +8,7 @@ class GroupObject:
         self.app = app
 
     def create(self, group):
-        with allure.step('create group'):
+        with allure.step(f'create group: {group}'):
             wd = self.app.wd
             self.open_groups_page()
 
@@ -26,33 +26,33 @@ class GroupObject:
     def open_groups_page(self):
         with allure.step('Open groups page'):
             wd = self.app.wd
-            if not (wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name("new")) > 0):
+            if not (wd.current_url.endswith('/group.php') and len(wd.find_elements_by_name('new')) > 0):
                 wd.find_element_by_link_text("groups").click()
 
     def fill_group_form(self, group):
-        with allure.step('fill group form'):
-            self.change_field_value("group_name", group.name)
-            self.change_field_value("group_header", group.header)
-            self.change_field_value("group_footer", group.footer)
+        with allure.step(f'fill group form {group}'):
+            self.change_field_value('group_name', group.name)
+            self.change_field_value('group_header', group.header)
+            self.change_field_value('group_footer', group.footer)
 
     def change_field_value(self, field_name, text):
-        with allure.step('change field value'):
+        with allure.step(f'change field value {field_name}:{text}'):
             wd = self.app.wd
             if text is not None:
                 wd.find_element_by_name(field_name).click()
                 wd.find_element_by_name(field_name).clear()
-                wd.find_element_by_name(field_name).send_keys("%s" % text)
+                wd.find_element_by_name(field_name).send_keys(f"{text}")
 
     def return_to_groups_page(self):
         with allure.step('return to groups page'):
             wd = self.app.wd
-            wd.find_element_by_link_text("groups").click()
+            wd.find_element_by_link_text('groups').click()
 
     def count(self):
         with allure.step('count groups'):
             wd = self.app.wd
             self.open_groups_page()
-            return len(wd.find_elements_by_name("selected[]"))
+            return len(wd.find_elements_by_name('selected[]'))
 
     group_cache = None
 
@@ -62,8 +62,24 @@ class GroupObject:
                 wd = self.app.wd
                 self.open_groups_page()
                 self.group_cache = []
-                for element in wd.find_elements_by_css_selector("span.group"):
+                for element in wd.find_elements_by_css_selector('span.group'):
                     text = element.text
-                    id = element.find_element_by_name("selected[]").get_attribute("value")
+                    id = element.find_element_by_name('selected[]').get_attribute('value')
                     self.group_cache.append(Group(name=text, id=id))
         return list(self.group_cache)
+
+    def delete_group_by_id(self, id):
+        wd = self.app.wd
+        self.open_groups_page()
+        self.select_group_by_id(id)
+
+        with allure.step('submit deletion'):
+            wd.find_element_by_name('delete').click()
+
+        self.return_to_groups_page()
+        self.group_cache = None
+
+    def select_group_by_id(self, id):
+        with allure.step(f'select group by id: {id}'):
+            wd = self.app.wd
+            wd.find_element_by_css_selector(f'input[value="{id}"]').click()
