@@ -29,3 +29,10 @@ class Group:
         else:
             return int(self.id) < int(other.id)
 
+    def __add__(self, other):
+        self.name = other.name if other.name is not None else self.name
+        self.header = other.header if other.header is not None else self.header
+        self.footer = other.footer if other.footer is not None else self.footer
+        self.id = other.id if other.id is not None else self.id
+        return self
+

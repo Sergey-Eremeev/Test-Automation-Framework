@@ -21,5 +21,5 @@ def test_delete_some_group(app):
 
     old_groups.remove(group)
 
-    with allure.step('comparison of the number of groups before and after removal'):
+    with allure.step('comparison of the list of groups before and after removal'):
         assert old_groups == new_groups
