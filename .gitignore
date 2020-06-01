@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# PyCharm
+.idea
+
+# Project 
+driver/
+allure-results/
+allure-2/
+config.json
