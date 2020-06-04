@@ -27,42 +27,44 @@ def app(request, db):
 
     browser = request.config.getoption("--browser")
     web_config = load_config(request.config.getoption("--config"))["web"]
+
     if fixture_app is None or not fixture_app.is_valid():
         fixture_app = Application(
             browser=browser,
             base_url=web_config["baseUrl"],
             db=db
         )
+
     fixture_app.session.ensure_login(
         username=web_config["username"],
         password=web_config["password"]
     )
+
     return fixture_app
 
 
 @pytest.fixture(scope="session")
-def db(request, check_ui):
-    if check_ui:
+def db(request):
+
+    if request.config.getoption("--check_ui"):
         return None
+
     db_config = load_config(request.config.getoption("--config"))["db"]
     db_fixture = Db(**db_config)
+
     request.addfinalizer(db_fixture.destroy)
     return db_fixture
 
 
 @pytest.fixture(scope="session", autouse=True)
 def stop(request):
+
     def fin():
         fixture_app.session.ensure_logout()
         fixture_app.destroy()
 
     request.addfinalizer(fin)
     return fixture_app
-
-
-@pytest.fixture(scope="session")
-def check_ui(request):
-    return request.config.getoption("--check_ui")
 
 
 def pytest_addoption(parser):
