@@ -16,10 +16,10 @@
 Запуск тестов
 ==================
 ##### с проверкой через пользовательский интерфейс
-``py.test --alluredir=allure_report tests/``
+``py.test --alluredir=allure_report tests/ --check_ui``
 
 ##### с проверкой через Базу Данных
-``py.test --alluredir=allure_report tests/  --check_ui``
+``py.test --alluredir=allure_report tests/ ``
 
 ``allure serve allure_report``
 
