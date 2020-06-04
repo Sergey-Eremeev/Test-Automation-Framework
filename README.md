@@ -2,7 +2,7 @@
 
 Описание
 ==========================
-Тестовый Фреймворк на базе python, pytest, selenium webdriver:
+Фреймворк для автотестов на базе python, pytest, selenium webdriver:
 
 * Написание тестов с использованием PageObject.
 * Отчеты Allure.
@@ -15,8 +15,11 @@
 
 Запуск тестов
 ==================
+##### с проверкой через пользовательский интерфейс
+``py.test --alluredir=allure_report tests/``
 
-``py.test --alluredir=allure_report tests/test_login.py``
+##### с проверкой через Базу Данных
+``py.test --alluredir=allure_report tests/  --check_ui``
 
 ``allure serve allure_report``
 
@@ -27,8 +30,14 @@
 		{
 		    "web": {
 		        "baseUrl": "https://...",
-		        "username": "...",
-		        "password": "..."
-		    }
+		        "username": ...,
+		        "password": ...
+		    },
+		    "db": {
+                "host": ...,
+                "name": ...,
+                "user": ...,
+                "password": ...
+             }
 		}
 

@@ -5,7 +5,7 @@ import random
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title('Test modify group name')
+@allure.title('Test modify group')
 @pytest.mark.regression
 def test_modify_group(app, json_groups: Group):
     if app.group.count() == 0:

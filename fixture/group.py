@@ -57,16 +57,23 @@ class GroupObject:
     group_cache = None
 
     def get_group_list(self):
-        with allure.step('get group list'):
-            if self.group_cache is None:
-                wd = self.app.wd
-                self.open_groups_page()
-                self.group_cache = []
-                for element in wd.find_elements_by_css_selector('span.group'):
-                    text = element.text
-                    id = element.find_element_by_name('selected[]').get_attribute('value')
-                    self.group_cache.append(Group(name=text, id=id))
-        return list(self.group_cache)
+        if self.app.db is None:
+            with allure.step('get group list through UI'):
+                if self.group_cache is None:
+                    wd = self.app.wd
+                    self.open_groups_page()
+                    self.group_cache = []
+                    for element in wd.find_elements_by_css_selector('span.group'):
+                        text = element.text
+                        id = element.find_element_by_name('selected[]').get_attribute('value')
+                        self.group_cache.append(Group(name=text, id=id))
+            return list(self.group_cache)
+        else:
+            with allure.step('get group list from DB'):
+                if self.group_cache is None:
+                    self.group_cache = []
+                    self.group_cache = self.app.db.get_group_list()
+            return list(self.group_cache)
 
     def delete_group_by_id(self, id):
         wd = self.app.wd

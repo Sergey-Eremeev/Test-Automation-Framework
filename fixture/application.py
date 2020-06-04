@@ -7,7 +7,7 @@ from fixture.group import GroupObject
 
 class Application:
 
-    def __init__(self, browser, base_url):
+    def __init__(self, browser, base_url, db):
         if browser == "firefox":
             self.wd = webdriver.Firefox(executable_path='./driver/geckodriver')
         elif browser == "chrome":
@@ -26,12 +26,13 @@ class Application:
         self.session = SessionObject(self)
         self.group = GroupObject(self)
         self.base_url = base_url
+        self.db = db
 
     def is_valid(self):
         try:
             self.wd.current_url
             return True
-        except:
+        except Exception:
             return False
 
     def open_home_page(self):

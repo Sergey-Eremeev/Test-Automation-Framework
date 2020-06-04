@@ -14,7 +14,7 @@ class Group:
         return (self.id is None or other.id is None or self.id == other.id) and self.name == other.name
 
     def __gt__(self, other):
-        if self.id is None :
+        if self.id is None:
             return True
         elif other.id is None:
             return False
@@ -35,4 +35,3 @@ class Group:
         self.footer = other.footer if other.footer is not None else self.footer
         self.id = other.id if other.id is not None else self.id
         return self
-

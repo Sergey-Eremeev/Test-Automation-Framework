@@ -2,8 +2,8 @@ import pytest
 import json
 import jsonpickle
 import os.path
-import importlib
 from fixture.application import Application
+from fixture.db import Db
 
 fixture_app = None
 config = None
@@ -22,7 +22,7 @@ def load_config(file):
 
 
 @pytest.fixture
-def app(request):
+def app(request, db):
     global fixture_app
 
     browser = request.config.getoption("--browser")
@@ -30,13 +30,24 @@ def app(request):
     if fixture_app is None or not fixture_app.is_valid():
         fixture_app = Application(
             browser=browser,
-            base_url=web_config["baseUrl"]
+            base_url=web_config["baseUrl"],
+            db=db
         )
     fixture_app.session.ensure_login(
         username=web_config["username"],
         password=web_config["password"]
     )
     return fixture_app
+
+
+@pytest.fixture(scope="session")
+def db(request, check_ui):
+    if check_ui:
+        return None
+    db_config = load_config(request.config.getoption("--config"))["db"]
+    db_fixture = Db(**db_config)
+    request.addfinalizer(db_fixture.destroy)
+    return db_fixture
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -49,9 +60,15 @@ def stop(request):
     return fixture_app
 
 
+@pytest.fixture(scope="session")
+def check_ui(request):
+    return request.config.getoption("--check_ui")
+
+
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="firefox")
     parser.addoption("--config", action="store", default="config.json")
+    parser.addoption("--check_ui", action="store_true")
 
 
 def pytest_generate_tests(metafunc):
