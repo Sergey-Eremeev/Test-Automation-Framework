@@ -3,3 +3,5 @@ selenium
 jsonpickle
 allure-pytest
 mysql-connector
+requests
+jsonschema
